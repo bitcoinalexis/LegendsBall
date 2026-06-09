@@ -97,10 +97,11 @@ html, body {
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: 6px;
-  text-indent: 6px;
+  font-size: clamp(30px, 8vw, 52px);
+  letter-spacing: 4px;
+  text-indent: 4px;
   text-align: center;
+  line-height: 1.1;
   color: var(--a);
   text-shadow: 4px 4px 0 #000;
   margin-bottom: 6px;
