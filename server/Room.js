@@ -125,7 +125,7 @@ export default class Room {
     const dir = slot === 'A' ? 1 : -1;
 
     const movX = p.input.forward * dir;
-    const movZ = slot === 'A' ? -p.input.strafe : p.input.strafe;
+    const movZ = slot === 'A' ? p.input.strafe : -p.input.strafe;
 
     p.x = clamp(p.x + movX * PLAYER.speed * DT, b.minX, b.maxX);
     p.z = clamp(p.z + movZ * PLAYER.speed * DT, -COURT.halfDepth + PLAYER.radius, COURT.halfDepth - PLAYER.radius);
@@ -219,7 +219,7 @@ export default class Room {
     ball.z = cz + nz * (sumR + 0.02);
 
     const toOpponent = slot === 'A' ? 1 : -1;
-    const moveZ = slot === 'A' ? -p.input.strafe : p.input.strafe;
+    const moveZ = slot === 'A' ? p.input.strafe : -p.input.strafe;
 
     ball.vx = toOpponent * HIT.forward;
     ball.vy = HIT.up + (p.onGround ? 0 : HIT.spikeBonus);
