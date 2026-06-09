@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PROSTIBOL</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="game-canvas"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="score">
+      <span class="tag tag-a">TÚ</span>
+      <span id="score-a">0</span>
+      <span class="dash">-</span>
+      <span id="score-b">0</span>
+      <span class="tag tag-b">RIVAL</span>
+    </div>
+    <div id="phase-banner" class="phase-banner hidden"></div>
+  </div>
+
+  <div id="overlay">
+    <div id="menu" class="panel">
+      <h1>PROSTIBOL</h1>
+      <p class="subtitle">Voleibol 1v1 · pixel arena</p>
+      <button id="play-btn">BUSCAR PARTIDA</button>
+      <p id="menu-msg" class="msg"></p>
+      <div class="controls">
+        <strong>Controles</strong>
+        <span>WASD / Flechas: mover · Espacio: saltar y golpear</span>
+      </div>
+    </div>
+
+    <div id="searching" class="panel hidden">
+      <h2>Buscando rival...</h2>
+      <div class="spinner"></div>
+      <button id="cancel-btn">Cancelar</button>
+    </div>
+
+    <div id="gameover" class="panel hidden">
+      <h2 id="gameover-title">Fin</h2>
+      <p id="gameover-score" class="msg"></p>
+      <button id="rematch-btn">REVANCHA</button>
+      <p id="rematch-msg" class="msg"></p>
+    </div>
+  </div>
+
+  <script type="module" src="/js/main.js"></script>
+</body>
+</html>
