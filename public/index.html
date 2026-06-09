@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>PROSTIBOL</title>
   <link rel="stylesheet" href="/styles.css" />
   <script src="/socket.io/socket.io.js"></script>
@@ -29,6 +29,13 @@
     <div id="phase-banner" class="phase-banner hidden"></div>
   </div>
 
+  <div id="touch-controls" class="hidden">
+    <div id="joystick" class="hidden">
+      <div id="joystick-knob"></div>
+    </div>
+    <div id="jump-btn">SALTAR</div>
+  </div>
+
   <div id="overlay">
     <div id="menu" class="panel">
       <h1>PROSTIBOL</h1>
@@ -37,7 +44,8 @@
       <p id="menu-msg" class="msg"></p>
       <div class="controls">
         <strong>Controles</strong>
-        <span>WASD / Flechas: mover · Espacio: saltar y golpear</span>
+        <span>Arrastra el dedo para moverte</span>
+        <span>Botón SALTAR para saltar y rematar</span>
       </div>
     </div>
 

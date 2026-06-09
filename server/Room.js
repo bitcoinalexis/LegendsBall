@@ -1,6 +1,6 @@
 import {
   TICK_RATE, COURT, NET, PLAYER, BALL, HIT,
-  WIN_SCORE, GROUND_Y, PHASE, POINT_PAUSE
+  WIN_SCORE, GROUND_Y, PHASE, POINT_PAUSE, BALL_SUBSTEPS
 } from '../shared/constants.js';
 
 const DT = 1 / TICK_RATE;
@@ -144,14 +144,20 @@ export default class Room {
   }
 
   updateBall() {
+    const h = DT / BALL_SUBSTEPS;
+    for (let i = 0; i < BALL_SUBSTEPS; i++) {
+      if (this.stepBall(h)) return;
+    }
+  }
+
+  stepBall(h) {
     const ball = this.ball;
-    ball.vy -= BALL.gravity * DT;
-
-    ball.x += ball.vx * DT;
-    ball.y += ball.vy * DT;
-    ball.z += ball.vz * DT;
-
     const r = BALL.radius;
+
+    ball.vy -= BALL.gravity * h;
+    ball.x += ball.vx * h;
+    ball.y += ball.vy * h;
+    ball.z += ball.vz * h;
 
     if (ball.z < -COURT.halfDepth + r) {
       ball.z = -COURT.halfDepth + r;
@@ -173,7 +179,7 @@ export default class Room {
     if (Math.abs(ball.x) <= netHalf && ball.y < NET.height + r) {
       const side = ball.vx > 0 ? -1 : 1;
       ball.x = side * netHalf;
-      ball.vx = -ball.vx * 0.5;
+      ball.vx = -Math.abs(ball.vx) * side * 0.5;
     }
 
     this.resolvePlayerHit('A');
@@ -183,7 +189,9 @@ export default class Room {
       ball.y = GROUND_Y + r;
       const scorer = ball.x < 0 ? 'B' : 'A';
       this.scorePoint(scorer);
+      return true;
     }
+    return false;
   }
 
   resolvePlayerHit(slot) {
@@ -196,25 +204,26 @@ export default class Room {
     const dx = ball.x - cx;
     const dy = ball.y - cy;
     const dz = ball.z - cz;
-    const sumR = PLAYER.radius + BALL.radius;
+    const sumR = PLAYER.radius + BALL.radius + HIT.reach;
     const distSq = dx * dx + dy * dy + dz * dz;
 
-    if (distSq >= sumR * sumR) return;
+    if (distSq >= sumR * sumR) return false;
 
     const dist = Math.sqrt(distSq) || 0.0001;
     const nx = dx / dist;
     const ny = dy / dist;
     const nz = dz / dist;
 
-    ball.x = cx + nx * (sumR + 0.01);
-    ball.y = cy + ny * (sumR + 0.01);
-    ball.z = cz + nz * (sumR + 0.01);
+    ball.x = cx + nx * (sumR + 0.02);
+    ball.y = cy + Math.max(ny, 0.15) * (sumR + 0.02);
+    ball.z = cz + nz * (sumR + 0.02);
 
     const toOpponent = slot === 'A' ? 1 : -1;
+    const moveZ = slot === 'A' ? -p.input.strafe : p.input.strafe;
 
-    ball.vx = nx * HIT.power + toOpponent * HIT.bias;
-    ball.vy = Math.max(ny * HIT.power, 0) + HIT.up;
-    ball.vz = nz * HIT.power;
+    ball.vx = toOpponent * HIT.forward;
+    ball.vy = HIT.up + (p.onGround ? 0 : HIT.spikeBonus);
+    ball.vz = nz * HIT.lateral + moveZ * HIT.moveInfluence;
 
     const speed = Math.hypot(ball.vx, ball.vy, ball.vz);
     if (speed > BALL.maxSpeed) {
@@ -223,6 +232,7 @@ export default class Room {
       ball.vy *= k;
       ball.vz *= k;
     }
+    return true;
   }
 
   scorePoint(scorer) {

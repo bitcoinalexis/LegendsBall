@@ -26,11 +26,15 @@ export const BALL = {
 };
 
 export const HIT = {
-  power: 9,
-  up: 9,
-  bias: 4,
-  playerInfluence: 0.6
+  forward: 10,
+  up: 9.5,
+  lateral: 7,
+  reach: 0.35,
+  spikeBonus: 2.5,
+  moveInfluence: 2
 };
+
+export const BALL_SUBSTEPS = 4;
 
 export const WIN_SCORE = 7;
 export const GROUND_Y = 0;
